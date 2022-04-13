@@ -20,6 +20,12 @@ import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import uploadButton from "./uploadButton.png";
 
+import Box from "@mui/material/Box";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+
 const Input = styled("input")({
   display: "none",
 });
@@ -30,6 +36,12 @@ export default function TabBox() {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  const handleSubmit = (e) => {
+    alert(name);
+  };
+
+  const [name, setName] = React.useState("");
 
   return (
     <div>
@@ -61,35 +73,48 @@ export default function TabBox() {
           <div
             style={{
               display: "flex",
-              flexGrow: 1,
+              // flexGrow: 1,
               justifyContent: "center",
             }}
           >
-            <label htmlFor="image-file-button" style={{ paddingTop: "100px" }}>
-              <Input accept="image/*" id="image-file-button" type="file" />
-              <Button
-                variant="contained"
-                component="span"
-                onClick={() => {
-                  handleChange("", "2");
-                }}
-                endIcon={<PhotoCamera style={{ fontSize: "30px" }} />}
-                size="large"
-                style={{
-                  backgroundColor: "#1976D2",
-                  textTransform: "none",
-                  width: "650px",
-                  height: "80px",
-                  fontSize: "25px",
-                  // TODO
-                  // "&:hover": {
-                  //   backgroundColor: "#121212",
-                  // },
-                }}
-              >
-                <b>Upload</b>
-              </Button>
-            </label>
+            <div>
+              <label htmlFor="image-file-button">
+                <Input accept="image/*" id="image-file-button" type="file" />
+                <Button
+                  variant="contained"
+                  component="span"
+                  endIcon={<PhotoCamera style={{ fontSize: "30px" }} />}
+                  size="large"
+                  style={{
+                    backgroundColor: "#1976D2",
+                    textTransform: "none",
+                    width: "650px",
+                    height: "80px",
+                    fontSize: "25px",
+                  }}
+                >
+                  <b>Upload</b>
+                </Button>
+              </label>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexGrow: 1,
+                justifyContent: "center",
+              }}
+            >
+              <form onSubmit={handleSubmit}>
+                <label>
+                  Enter your name:
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                </label>
+              </form>
+            </div>
           </div>
         </TabPanel>
         <TabPanel value="2">Item Two</TabPanel>
