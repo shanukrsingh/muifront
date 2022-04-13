@@ -1,14 +1,12 @@
 import * as React from "react";
 import TopBar from "./TopBar";
-import TabBox from "./TabBox";
-import FormBox from "./FormBox";
+import UploadBox from "./UploadBox";
 
 function App() {
   return (
     <div>
       <TopBar />
-      {/* <TabBox /> */}
-      <FormBox />
+      <UploadBox />
     </div>
   );
 }
