@@ -1,6 +1,11 @@
+import { Container } from "@mui/material";
 import axios from "axios";
 
 import React, { useState } from "react";
+
+// FORMIK for forms
+
+import reactDropDown from "./algoSelect";
 
 // class NewUp extends Component {
 //   state = {
@@ -105,7 +110,18 @@ const NewUp = () => {
 
   const [selectedFile, setSelectedFile] = useState(null);
   const [pic, setPic] = useState(null);
+  const [algoType, setAlgoType] = useState("nearest_neighbour");
+  const [scalingVal, setScalingVal] = useState("1");
+  const [currentlyProcessing, setCurrentlyProcessing] = useState(false);
 
+  const handleDropDown = (event) => {
+    // console.log(event);s
+    setAlgoType(event.value);
+  };
+
+  const handleScalingVal = (event) => {
+    setScalingVal(event.val);
+  };
   // On file select (from the pop up)
   const onFileChange = (event) => {
     // Update the state
@@ -114,6 +130,9 @@ const NewUp = () => {
 
   // On file upload (click the upload button)
   const onFileUpload = () => {
+    reset();
+    setCurrentlyProcessing(true);
+
     // Create an object of formData
     const formData = new FormData();
 
@@ -125,29 +144,30 @@ const NewUp = () => {
 
     // Request made to the backend api
     // Send formData object
+
+    console.log(algoType);
+
     axios
       .post(
-        "http://localhost:8080/api/algorithms/nearest_neighbour/2",
+        "http://localhost:8080/api/algorithms/" + algoType + "/" + scalingVal,
         formData
       )
-      .then(
-        fetch("http://localhost:8080/api/algorithms/nearest_neighbour/2", {
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-        }).then((response) => {
-          if (response.status == 200) {
-            getImage();
-          }
-        })
+      .then((response) => {
+        if (response.status === 200) {
+          getImage();
+          setCurrentlyProcessing(false);
+        }
+      });
 
-        //   .then((data) => {
-        //     console.log(JSON.parse(data));
-        //     setPic(JSON.parse(data));
-        //   })
-      );
+    //   .then((data) => {
+    //     console.log(JSON.parse(data));
+    //     setPic(JSON.parse(data));
+    //   })
+    // );
+  };
+
+  const reset = () => {
+    setPic(null);
   };
 
   const getImage = async () => {
@@ -164,11 +184,8 @@ const NewUp = () => {
       return (
         <div>
           <h2>File Details:</h2>
-
           <p>File Name: {selectedFile.name}</p>
-
           <p>File Type: {selectedFile.type}</p>
-
           <p>Last Modified: {selectedFile.lastModifiedDate.toDateString()}</p>
         </div>
       );
@@ -187,15 +204,35 @@ const NewUp = () => {
       <h1>Image Upload</h1>
       <h3>File Upload using React!</h3>
       <div>
-        <input type="file" onChange={onFileChange} />
-        <button onClick={onFileUpload}>Upload!</button>
+        <Container>
+          <input type="file" onChange={onFileChange} />
+        </Container>
+
+        {/* TODO: ADD IMAGE PREVIEW to SHANU */}
+
+        <Container>{reactDropDown({ handleDropDown })}</Container>
+
+        {/* TODO: ADD SCALING VAL BUTTON  */}
+
+        <Container>
+          <button onClick={onFileUpload}>Upload!</button>
+        </Container>
       </div>
       {fileData()}
-      {pic && (
-        <div>
-          <img src={pic} alt="skdfks" srcSet="" />
-        </div>
-      )}
+
+      {(() => {
+        if (currentlyProcessing) {
+          return <h1>currently Processing the image...</h1>;
+        } else {
+          return (
+            pic && (
+              <div>
+                <img src={pic} alt="IMAGE" srcSet="" />
+              </div>
+            )
+          );
+        }
+      })()}
     </div>
   );
 };
